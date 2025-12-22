@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/style.css">
+  <title>Autodesk Platform Services: Viewer Revit Coordinates</title>
+  <style type="text/css">
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+    }
+
+    #header>* {
+      height: 2em;
+      margin: 0 0.5em;
+      font-size: 1em;
+      font-family: ArtifaktElement;
+    }
+
+    #header .title {
+      flex: 1 0 auto;
+      height: auto;
+    }
+
+    .apsViewer {
+      width: 100%;
+      height: calc(100vh - 2em);
+      position: relative;
+      float: left;
+    }
+  </style>
+</head>
+
+<body onload="initViewers()">
+  <div id="header">
+    <img class="logo" src="https://cdn.autodesk.io/logo/black/stacked.png " alt="Autodesk Platform Services">
+    <span class="title">Simple Viewer Revit Coordinates</span>
+  </div>
+  <div id="viewerContainer" class="apsViewer">
+  </div>
+  <script src="https://developer.api.autodesk.com/modelderivative/v2/viewers/7.*/viewer3D.js"></script>
+  <script src="./RevitCoordinatesExtension.js"></script>
+  <!-- Sweetalert2 to handle notifications -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</body>
+
+<script>
+  var tokenurl = 'https://9sjonbv0c5.execute-api.us-east-1.amazonaws.com/default/aps-2lo-lambda';
+
+  var viewer;
+  async function initViewers() {
+    await fetch(tokenurl,{
+    method: 'GET', // or 'POST', 'PUT', 'DELETE', etc.
+    headers: {
+        'Content-Type': 'application/json'
+    }
+}).then(function (response) {
+      return response.json();
+    }).then(function (token) {
+      // Sample urns
+      let urns = ['dXJuOmFkc2sub2JqZWN0czpvcy5vYmplY3Q6am9hby1tYXJ0aW5zLWRlbW8tYnVja2V0L3JhY2Jhc2ljc2FtcGxlcHJvamVjdC5ydnQ'];
+
+      const options = {
+        env: 'AutodeskProduction',
+        accessToken: token.access_token
+      };
+
+      Autodesk.Viewing.Initializer(options, () => {
+        let viewerDiv = document.getElementById("viewerContainer");
+        const config = {
+          extensions: ['Autodesk.DocumentBrowser', 'Autodesk.DataVisualization', 'RevitCoordinatesExtension']
+        };
+        viewer = new Autodesk.Viewing.Private.GuiViewer3D(viewerDiv, config);
+        viewer.start();
+        viewer.setTheme("light-theme");
+      });
+
+      urns.map((urn, index) => {
+        Autodesk.Viewing.Document.load(`urn:${urn}`, doc => {
+          var viewables = doc.getRoot().getDefaultGeometry();
+          viewer.loadDocumentNode(doc, viewables, {
+            keepCurrentModels: true
+          });
+        });
+      });
+    });
+  }
+
+</script>
+
+</html>
