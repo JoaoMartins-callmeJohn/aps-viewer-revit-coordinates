@@ -199,12 +199,7 @@ class RevitCoordinatesExtension extends Autodesk.Viewing.Extension {
   constructor(viewer, options) {
     super(viewer, options);
     this._button = null;
-    this.tool = new RevitCoordinatesTool(viewer);
-    this._onObjectTreeCreated = (ev) => this.onModelLoaded(ev.model);
-  }
-
-  async onModelLoaded(model) {
-    await this.tool.prepareDataViz();
+    this.tool = new RevitCoordinatesTool(viewer); 
   }
 
   onToolbarCreated(toolbar) {
@@ -213,6 +208,7 @@ class RevitCoordinatesExtension extends Autodesk.Viewing.Extension {
       this._button.setState(!!this._button.getState() ? Autodesk.Viewing.UI.Button.State.ACTIVE : Autodesk.Viewing.UI.Button.State.INACTIVE);
       if(this._button.getState() === Autodesk.Viewing.UI.Button.State.ACTIVE){
         this.viewer.toolController.activateTool(RevitCoordinatesToolToolName);
+        await this.tool.prepareDataViz();
         this.tool.renderSurveyAndInternalOriginPoints();
       }
       else{
@@ -264,4 +260,4 @@ class RevitCoordinatesExtension extends Autodesk.Viewing.Extension {
   }
 }
 
-Autodesk.Viewing.theExtensionManager.registerExtension('RevitCoordinatesExtension', RevitCoordinatesExtension);
+Autodesk.Viewing.theExtensionManager.registerExtension('RevitCoordinates3DExtension', RevitCoordinatesExtension);
