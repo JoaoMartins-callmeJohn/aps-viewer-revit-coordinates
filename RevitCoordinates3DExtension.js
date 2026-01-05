@@ -68,7 +68,10 @@ class RevitCoordinatesTool extends Autodesk.Viewing.ToolInterface {
     // Get global offset to convert viewer coordinates to internal Revit coordinates
     const globalOffset = this.viewer.model.getGlobalOffset();
     const globalOffsetPoint = new THREE.Vector3(globalOffset.x, globalOffset.y, globalOffset.z);
-    
+
+    //Get the unit string
+    const unitString = this.viewer.model.getUnitString();
+
     // Convert viewer coordinates to internal Revit coordinates
     // Internal Revit coordinates = Viewer coordinates + globalOffset
     const internalRevitCoords = intersectPoint.clone().add(globalOffsetPoint);
@@ -107,9 +110,9 @@ class RevitCoordinatesTool extends Autodesk.Viewing.ToolInterface {
       <div style="font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid rgba(255, 255, 255, 0.3); padding-bottom: 5px;">
         Internal Revit Coordinates
       </div>
-      <div>X: ${internalRevitCoords.x.toFixed(3)}</div>
-      <div>Y: ${internalRevitCoords.y.toFixed(3)}</div>
-      <div>Z: ${internalRevitCoords.z.toFixed(3)}</div>
+      <div>X: ${internalRevitCoords.x.toFixed(3)} ${unitString}</div>
+      <div>Y: ${internalRevitCoords.y.toFixed(3)} ${unitString}</div>
+      <div>Z: ${internalRevitCoords.z.toFixed(3)} ${unitString}</div>
     `;
   }
 

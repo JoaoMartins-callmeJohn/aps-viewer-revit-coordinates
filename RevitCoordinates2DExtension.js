@@ -95,6 +95,9 @@ class RevitCoordinates2DTool extends Autodesk.Viewing.ToolInterface {
       
       // Get the 2D to 3D transformation matrix from the viewport
       const matrix = viewport.get2DTo3DMatrix(sheetUnitScale);
+
+      //Get the unit string
+      const unitString = this.viewer.model.getUnitString();
       
       // Convert sheet coordinates to world coordinates (3D)
       // Use the Z component from the matrix (matrix.elements[14]) for the Z coordinate
@@ -150,9 +153,9 @@ class RevitCoordinates2DTool extends Autodesk.Viewing.ToolInterface {
         <div style="font-size: 11px; color: rgba(255, 255, 255, 0.7); margin-bottom: 5px;">
           Viewport: ${viewportName}
         </div>
-        <div>X: ${internalRevitCoords.x.toFixed(3)}</div>
-        <div>Y: ${internalRevitCoords.y.toFixed(3)}</div>
-        <div>Z: ${internalRevitCoords.z.toFixed(3)}</div>
+        <div>X: ${internalRevitCoords.x.toFixed(3)} ${unitString}</div>
+        <div>Y: ${internalRevitCoords.y.toFixed(3)} ${unitString}</div>
+        <div>Z: ${internalRevitCoords.z.toFixed(3)} ${unitString}</div>
       `;
     } catch (error) {
       console.error('Error updating 2D coordinates:', error);
